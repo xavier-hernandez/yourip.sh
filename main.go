@@ -31,7 +31,7 @@ type Configuration struct {
 	tlsport         string // HTTPS Port
 	maxMindUserName string // MaxMind UserName
 	maxMindPassword string // MaxMind Password
-	plausible       string // Plausible snippet
+	plausible       string // Plausible domain
 }
 
 var configuration = Configuration{}
