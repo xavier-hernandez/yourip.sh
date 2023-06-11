@@ -24,9 +24,14 @@ version: "3.4"
 
 services:
   miip:
-    image: miip.io:latest
+    container_name: miip
+    image: xavierh/miip:latest
     ports:
       - 8080:8080
     environment:
       HOSTNAME: "miip.io"
+      MAXMIND_USERNAME: [USERNAME]
+      MAXMIND_PASSWORD: [PASSWORD]
+      PLAUSIBLE: [PLAUSIBLE_DOMAIN] #entering a domain here will enable the snippet
+      FORWARD_IP_HEADER: X-Forwarded-For #if using npm as proxy
 ```
