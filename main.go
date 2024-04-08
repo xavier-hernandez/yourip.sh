@@ -61,7 +61,7 @@ func init() {
 	maxMindPassword := getEnvWithDefault("MAXMIND_PASSWORD", "")
 
 	plausible := getEnvWithDefault("PLAUSIBLE", "")
-	self_hosted_plausible := getEnvWithDefault("SELF_HOSTED_PLAUSIBLE", "")
+	self_hosted_plausible := getEnvWithDefault("PLAUSIBLE_SELF_HOSTED_DOMAIN", "")
 
 	configuration = Configuration{
 		hostname:        		hostname,
