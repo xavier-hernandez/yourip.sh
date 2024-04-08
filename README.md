@@ -37,5 +37,6 @@ services:
       MAXMIND_USERNAME: [USERNAME]
       MAXMIND_PASSWORD: [PASSWORD]
       PLAUSIBLE: [PLAUSIBLE_DOMAIN] #entering a domain here will enable the snippet
+      SELF_HOSTED_PLAUSIBLE: [PLAUSIBLE_SELF_HOSTED_DOMAIN] #meant to set the JS script to your self hosted domain
       FORWARD_IP_HEADER: X-Forwarded-For #if using npm as proxy
 ```

@@ -18,20 +18,21 @@ import (
 )
 
 type Configuration struct {
-	hostname        string // Displayed Hostname
-	cmd_hostname    string // Displayed Hostname for CMD section
-	host            string // Listened Host
-	port            string // HTTP Port
-	proxy_listener  string // Proxy Protocol Listener
-	ipheader        string // Header to overwrite the remote IP
-	countryheader   string // Header to find country code associated to remote IP
-	tls             bool   // TLS enabled
-	tlscert         string // TLS Cert Path
-	tlskey          string // TLS Cert Key Path
-	tlsport         string // HTTPS Port
-	maxMindUserName string // MaxMind UserName
-	maxMindPassword string // MaxMind Password
-	plausible       string // Plausible domain
+	hostname        		string // Displayed Hostname
+	cmd_hostname    		string // Displayed Hostname for CMD section
+	host            		string // Listened Host
+	port            		string // HTTP Port
+	proxy_listener  		string // Proxy Protocol Listener
+	ipheader        		string // Header to overwrite the remote IP
+	countryheader   		string // Header to find country code associated to remote IP
+	tls             		bool   // TLS enabled
+	tlscert         		string // TLS Cert Path
+	tlskey          		string // TLS Cert Key Path
+	tlsport         		string // HTTPS Port
+	maxMindUserName 		string // MaxMind UserName
+	maxMindPassword 		string // MaxMind Password
+	plausible       		string // Plausible domain
+	self_hosted_plausible	string // Plausible self hosted domain for JS
 }
 
 var configuration = Configuration{}
@@ -60,22 +61,24 @@ func init() {
 	maxMindPassword := getEnvWithDefault("MAXMIND_PASSWORD", "")
 
 	plausible := getEnvWithDefault("PLAUSIBLE", "")
+	self_hosted_plausible := getEnvWithDefault("SELF_HOSTED_PLAUSIBLE", "")
 
 	configuration = Configuration{
-		hostname:        hostname,
-		cmd_hostname:    cmd_hostname,
-		host:            host,
-		port:            port,
-		proxy_listener:  proxy_listener,
-		ipheader:        ipheader,
-		countryheader:   countryheader,
-		tls:             tlsenabled == "1",
-		tlscert:         tlscert,
-		tlskey:          tlskey,
-		tlsport:         tlsport,
-		maxMindUserName: maxMindUserName,
-		maxMindPassword: maxMindPassword,
-		plausible:       plausible,
+		hostname:        		hostname,
+		cmd_hostname:    		cmd_hostname,
+		host:            		host,
+		port:            		port,
+		proxy_listener:  		proxy_listener,
+		ipheader:        		ipheader,
+		countryheader:   		countryheader,
+		tls:             		tlsenabled == "1",
+		tlscert:         		tlscert,
+		tlskey:          		tlskey,
+		tlsport:         		tlsport,
+		maxMindUserName: 		maxMindUserName,
+		maxMindPassword: 		maxMindPassword,
+		plausible:       		plausible,
+		self_hosted_plausible:	self_hosted_plausible,
 	}
 }
 
@@ -131,7 +134,8 @@ func mainHandler(c *gin.Context) {
 	c.Set("ifconfig_hostname", configuration.hostname)
 	c.Set("ifconfig_cmd_hostname", configuration.cmd_hostname)
 	c.Set("ifconfig_plausible", configuration.plausible)
-
+	c.Set("ifconfig_self_hosted_plausible", configuration.self_hosted_plausible)
+	
 	t := time.Now()
 	c.Set("ifconfig_copyrightYear", t.Year())
 

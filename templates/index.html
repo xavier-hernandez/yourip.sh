@@ -203,7 +203,11 @@
       Array.prototype.forEach.call(document.getElementsByClassName("copy_text") , (element) => {element.addEventListener("click", function(event) {copyText(event);event.preventDefault();});});
     </script>
     {{if .ifconfig_plausible }}
-    <script defer data-domain="{{ .ifconfig_plausible }}" src="https://plausible.io/js/script.js"></script>
+      {{if .ifconfig_self_hosted_plausible }}
+        <script defer data-domain="{{ .ifconfig_plausible }}" src="https://{{ .ifconfig_self_hosted_plausible }}/js/plausible.js"></script>
+      {{else}}
+        <script defer data-domain="{{ .ifconfig_plausible }}" src="https://plausible.io/js/script.js"></script>
+      {{end}}
     {{end}}
   </body>
 </html>
