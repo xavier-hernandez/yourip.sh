@@ -10,7 +10,7 @@ Original website: https://ifconfig.io/
 
 ## My Enhancements
 - Maxmind
-  - Geo Location
+  - Geo Location API or Local databases
 - Plausible Analytics
 
 This repo: https://github.com/xavier-hernandez/miip.io
