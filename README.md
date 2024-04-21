@@ -10,7 +10,7 @@ Original website: https://ifconfig.io/
 
 ## My Enhancements
 - Maxmind
-  - Geo Location
+  - Geo Location API or Local databases
 - Plausible Analytics
 
 This repo: https://github.com/xavier-hernandez/miip.io
@@ -34,8 +34,8 @@ services:
       - 8080:8080
     environment:
       HOSTNAME: "miip.io"
-      MAXMIND_USERNAME: [USERNAME]
-      MAXMIND_PASSWORD: [PASSWORD]
+      MAXMIND_USERNAME: [USERNAME] #internal GeoLite2 databases are used if your not passing a username or password 
+      MAXMIND_PASSWORD: [PASSWORD] #internal GeoLite2 databases are used if your not passing a username or password
       PLAUSIBLE: [PLAUSIBLE_DOMAIN] #entering a domain here will enable the snippet
       PLAUSIBLE_SELF_HOSTED_DOMAIN: [PLAUSIBLE_SELF_HOSTED_DOMAIN] #meant to set the JS script to your self hosted domain
       FORWARD_IP_HEADER: X-Forwarded-For #if using npm as proxy

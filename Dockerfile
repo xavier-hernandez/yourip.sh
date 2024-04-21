@@ -36,6 +36,10 @@ COPY ./LICENSE /LICENSE
 # Fixes cert issue when calling Maxmind API
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
+ADD assests /assests
+
+EXPOSE 8080
+
 # Command to run
 ENTRYPOINT ["/main"]
 
