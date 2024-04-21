@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/oschwald/maxminddb-golang"
 	"io"
 	"log"
 	"net"
@@ -18,21 +19,21 @@ import (
 )
 
 type Configuration struct {
-	hostname        		string // Displayed Hostname
-	cmd_hostname    		string // Displayed Hostname for CMD section
-	host            		string // Listened Host
-	port            		string // HTTP Port
-	proxy_listener  		string // Proxy Protocol Listener
-	ipheader        		string // Header to overwrite the remote IP
-	countryheader   		string // Header to find country code associated to remote IP
-	tls             		bool   // TLS enabled
-	tlscert         		string // TLS Cert Path
-	tlskey          		string // TLS Cert Key Path
-	tlsport         		string // HTTPS Port
-	maxMindUserName 		string // MaxMind UserName
-	maxMindPassword 		string // MaxMind Password
-	plausible       		string // Plausible domain
-	self_hosted_plausible	string // Plausible self hosted domain for JS
+	hostname              string // Displayed Hostname
+	cmd_hostname          string // Displayed Hostname for CMD section
+	host                  string // Listened Host
+	port                  string // HTTP Port
+	proxy_listener        string // Proxy Protocol Listener
+	ipheader              string // Header to overwrite the remote IP
+	countryheader         string // Header to find country code associated to remote IP
+	tls                   bool   // TLS enabled
+	tlscert               string // TLS Cert Path
+	tlskey                string // TLS Cert Key Path
+	tlsport               string // HTTPS Port
+	maxMindUserName       string // MaxMind UserName
+	maxMindPassword       string // MaxMind Password
+	plausible             string // Plausible domain
+	self_hosted_plausible string // Plausible self hosted domain for JS
 }
 
 var configuration = Configuration{}
@@ -64,21 +65,21 @@ func init() {
 	self_hosted_plausible := getEnvWithDefault("PLAUSIBLE_SELF_HOSTED_DOMAIN", "")
 
 	configuration = Configuration{
-		hostname:        		hostname,
-		cmd_hostname:    		cmd_hostname,
-		host:            		host,
-		port:            		port,
-		proxy_listener:  		proxy_listener,
-		ipheader:        		ipheader,
-		countryheader:   		countryheader,
-		tls:             		tlsenabled == "1",
-		tlscert:         		tlscert,
-		tlskey:          		tlskey,
-		tlsport:         		tlsport,
-		maxMindUserName: 		maxMindUserName,
-		maxMindPassword: 		maxMindPassword,
-		plausible:       		plausible,
-		self_hosted_plausible:	self_hosted_plausible,
+		hostname:              hostname,
+		cmd_hostname:          cmd_hostname,
+		host:                  host,
+		port:                  port,
+		proxy_listener:        proxy_listener,
+		ipheader:              ipheader,
+		countryheader:         countryheader,
+		tls:                   tlsenabled == "1",
+		tlscert:               tlscert,
+		tlskey:                tlskey,
+		tlsport:               tlsport,
+		maxMindUserName:       maxMindUserName,
+		maxMindPassword:       maxMindPassword,
+		plausible:             plausible,
+		self_hosted_plausible: self_hosted_plausible,
 	}
 }
 
@@ -135,7 +136,7 @@ func mainHandler(c *gin.Context) {
 	c.Set("ifconfig_cmd_hostname", configuration.cmd_hostname)
 	c.Set("ifconfig_plausible", configuration.plausible)
 	c.Set("ifconfig_self_hosted_plausible", configuration.self_hosted_plausible)
-	
+
 	t := time.Now()
 	c.Set("ifconfig_copyrightYear", t.Year())
 
@@ -155,7 +156,20 @@ func mainHandler(c *gin.Context) {
 
 	//MaxMind Logic
 	if len(configuration.maxMindUserName) == 0 || len(configuration.maxMindUserName) == 0 {
-		c.Set("maxMindShow", false)
+		//c.Set("maxMindShow", false)
+		c.Set("maxMindShow", true)
+		//maxMindResult := GetMaxMindInfoFromDBs(ip.IP.String())
+		maxMindResult := GetMaxMindInfoFromDBs("67.175.164.166")
+		if maxMindResult.MaxMindError == false {
+			c.Set("city", maxMindResult.City.Names.English)
+			c.Set("postalCode", maxMindResult.Postal.Code)
+			c.Set("country", maxMindResult.Country.Names.English)
+			c.Set("continent", maxMindResult.Continent.Names.English)
+			c.Set("isp", maxMindResult.Traits.Isp)
+			c.Set("isp_organization", maxMindResult.Traits.Organization)
+		} else {
+			c.Set("maxMindShow", false)
+		}
 	} else {
 		c.Set("maxMindShow", true)
 		maxMindResult := GetMaxMindInfo(ip.IP.String(), configuration.maxMindUserName, configuration.maxMindPassword)
@@ -408,6 +422,75 @@ func GetMaxMindInfo(ipAddress string, username string, password string) MaxmindN
 		log.Println(fmt.Sprintf("MaxMind - Error unmarshalling"))
 		return maxmindResult
 	}
+
+	maxmindResult.MaxMindError = false
+
+	return maxmindResult
+}
+
+func GetMaxMindInfoFromDBs(ipAddress string) MaxmindNode {
+	var maxmindResult MaxmindNode
+
+	//GET GEO INFO
+	var record struct {
+		Continent struct {
+			Names map[string]string `maxminddb:"names"`
+		} `maxminddb:"continent"`
+		City struct {
+			Names map[string]string `maxminddb:"names"`
+		} `maxminddb:"city"`
+		Subdivisions []struct {
+			Names map[string]string `maxminddb:"names"`
+		} `maxminddb:"subdivisions"`
+		Country struct {
+			Names map[string]string `maxminddb:"names"`
+		} `maxminddb:"country"`
+		Postal struct {
+			Code string `maxminddb:"code"`
+		} `maxminddb:"postal"`
+	}
+
+	db, err := maxminddb.Open("assests/maxmind/GeoLite2-City.mmdb")
+	if err != nil {
+		maxmindResult.MaxMindError = true
+		log.Println(fmt.Sprintf("MaxMind - Cannot find GeoLite2-City.mmdb"))
+		return maxmindResult
+	}
+	defer db.Close()
+
+	ip := net.ParseIP(ipAddress)
+
+	if err := db.Lookup(ip, &record); err != nil {
+		log.Println(fmt.Sprintf("MaxMind - Error reading response"))
+		log.Panic(err)
+		return maxmindResult
+	}
+
+	maxmindResult.Continent.Names.English = record.Continent.Names["en"]
+	maxmindResult.Postal.Code = record.Postal.Code
+	maxmindResult.City.Names.English = record.City.Names["en"]
+	maxmindResult.Country.Names.English = record.Country.Names["en"]
+
+	dbASN, err := maxminddb.Open("assests/maxmind/GeoLite2-ASN.mmdb") // Path to your GeoLite2-ASN.mmdb file
+	if err != nil {
+		log.Println(fmt.Sprintf("MaxMind - Cannot find GeoLite2-ASN.mmdb"))
+		return maxmindResult
+	}
+	defer dbASN.Close()
+
+	var recordASN struct {
+		ISP             int    `maxminddb:"autonomous_system_number"`
+		ISPOrganization string `maxminddb:"autonomous_system_organization"`
+	}
+
+	if err := dbASN.Lookup(ip, &recordASN); err != nil {
+		log.Println(fmt.Sprintf("MaxMind - Error reading response"))
+		log.Panic(err)
+		return maxmindResult
+	}
+
+	maxmindResult.Traits.Isp = strconv.Itoa(recordASN.ISP)
+	maxmindResult.Traits.Organization = recordASN.ISPOrganization
 
 	maxmindResult.MaxMindError = false
 
