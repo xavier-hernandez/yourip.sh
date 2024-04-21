@@ -40,3 +40,6 @@ services:
       PLAUSIBLE_SELF_HOSTED_DOMAIN: [PLAUSIBLE_SELF_HOSTED_DOMAIN] #meant to set the JS script to your self hosted domain
       FORWARD_IP_HEADER: X-Forwarded-For #if using npm as proxy
 ```
+# **Disclaimer**
+This product includes GeoLite2 data created by MaxMind, available from
+<a href="https://www.maxmind.com">https://www.maxmind.com</a>.
