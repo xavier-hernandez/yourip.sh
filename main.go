@@ -39,7 +39,7 @@ type Configuration struct {
 var configuration = Configuration{}
 
 func init() {
-	hostname := getEnvWithDefault("HOSTNAME", "ifconfig.io")
+	hostname := getEnvWithDefault("HOSTNAME", "miip.io")
 	protocol := getEnvWithDefault("CMD_PROTOCOL", "")
 
 	cmd_hostname := protocol + hostname
