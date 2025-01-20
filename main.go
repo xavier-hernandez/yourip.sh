@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/getsentry/sentry-go"
+	"github.com/gin-gonic/gin"
+	json "github.com/json-iterator/go"
 	"github.com/oschwald/maxminddb-golang"
+	"github.com/pires/go-proxyproto"
 	"io"
 	"log"
 	"net"
@@ -11,11 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	json "github.com/json-iterator/go"
-
-	"github.com/gin-gonic/gin"
-	proxyproto "github.com/pires/go-proxyproto"
 )
 
 type Configuration struct {
@@ -39,6 +38,13 @@ type Configuration struct {
 var configuration = Configuration{}
 
 func init() {
+	glitchTipDsn := getEnvWithDefault("GLITCH_TIP_DSN", "")
+	if len(glitchTipDsn) > 0 {
+		sentry.Init(sentry.ClientOptions{
+			Dsn: glitchTipDsn,
+		})
+	}
+
 	hostname := getEnvWithDefault("HOSTNAME", "miip.io")
 	protocol := getEnvWithDefault("CMD_PROTOCOL", "")
 
@@ -159,6 +165,7 @@ func mainHandler(c *gin.Context) {
 		//c.Set("maxMindShow", false)
 		c.Set("maxMindShow", true)
 		maxMindResult := GetMaxMindInfoFromDBs(ip.IP.String())
+		sentry.CaptureMessage("maxMindResult IP: " + ip.IP.String())
 		if maxMindResult.MaxMindError == false {
 			c.Set("city", maxMindResult.City.Names.English)
 			c.Set("postalCode", maxMindResult.Postal.Code)
@@ -458,6 +465,8 @@ func GetMaxMindInfoFromDBs(ipAddress string) MaxmindNode {
 	defer db.Close()
 
 	ip := net.ParseIP(ipAddress)
+	sentry.CaptureMessage("GetMaxMindInfoFromDBs IP: " + ip.String())
+	sentry.CaptureMessage("GetMaxMindInfoFromDBs IP Address: " + ipAddress)
 
 	if err := db.Lookup(ip, &record); err != nil {
 		log.Println(fmt.Sprintf("MaxMind - Error reading response"))
