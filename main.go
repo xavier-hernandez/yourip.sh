@@ -165,7 +165,6 @@ func mainHandler(c *gin.Context) {
 		//c.Set("maxMindShow", false)
 		c.Set("maxMindShow", true)
 		maxMindResult := GetMaxMindInfoFromDBs(ip.IP.String())
-		sentry.CaptureMessage("maxMindResult IP: " + ip.IP.String())
 		if maxMindResult.MaxMindError == false {
 			c.Set("city", maxMindResult.City.Names.English)
 			c.Set("postalCode", maxMindResult.Postal.Code)
@@ -465,8 +464,6 @@ func GetMaxMindInfoFromDBs(ipAddress string) MaxmindNode {
 	defer db.Close()
 
 	ip := net.ParseIP(ipAddress)
-	sentry.CaptureMessage("GetMaxMindInfoFromDBs IP: " + ip.String())
-	sentry.CaptureMessage("GetMaxMindInfoFromDBs IP Address: " + ipAddress)
 
 	if err := db.Lookup(ip, &record); err != nil {
 		log.Println(fmt.Sprintf("MaxMind - Error reading response"))
