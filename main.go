@@ -158,8 +158,7 @@ func mainHandler(c *gin.Context) {
 	if len(configuration.maxMindUserName) == 0 || len(configuration.maxMindUserName) == 0 {
 		//c.Set("maxMindShow", false)
 		c.Set("maxMindShow", true)
-		//maxMindResult := GetMaxMindInfoFromDBs(ip.IP.String())
-		maxMindResult := GetMaxMindInfoFromDBs("67.175.164.166")
+		maxMindResult := GetMaxMindInfoFromDBs(ip.IP.String())
 		if maxMindResult.MaxMindError == false {
 			c.Set("city", maxMindResult.City.Names.English)
 			c.Set("postalCode", maxMindResult.Postal.Code)
