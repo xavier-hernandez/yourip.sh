@@ -1,5 +1,5 @@
 
-# miip.io
+# ipreveal.cc
 
 ## Fork of ifconfig.io
 This is a fork of ifconfig.io. Please read the original repo for more configuration instructions.
