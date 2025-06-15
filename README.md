@@ -13,11 +13,11 @@ Original website: https://ifconfig.io/
   - Geo Location API or Local databases
 - Plausible Analytics
 
-This repo: https://github.com/xavier-hernandez/miip.io
+This repo: https://github.com/xavier-hernandez/ipreveal.cc
 
-Docker Image: https://hub.docker.com/r/xavierh/miip
+Docker Image: https://hub.docker.com/r/xavierh/ipreveal
 
-Website: https://miip.io/
+Website: https://ipreveal.cc
 
 ## Docker-Compose
 
@@ -27,13 +27,13 @@ Here is a sample docker-compose file:
 version: "3.4"
 
 services:
-  miip:
-    container_name: miip
-    image: xavierh/miip:latest
+  ipreveal:
+    container_name: ipreveal
+    image: xavierh/ipreveal:latest
     ports:
       - 8080:8080
     environment:
-      HOSTNAME: "miip.io"
+      HOSTNAME: "ipreveal.io"
       MAXMIND_USERNAME: [USERNAME] #internal GeoLite2 databases are used if your not passing a username or password 
       MAXMIND_PASSWORD: [PASSWORD] #internal GeoLite2 databases are used if your not passing a username or password
       PLAUSIBLE: [PLAUSIBLE_DOMAIN] #entering a domain here will enable the snippet
