@@ -45,7 +45,7 @@ func init() {
 		})
 	}
 
-	hostname := getEnvWithDefault("HOSTNAME", "miip.io")
+	hostname := getEnvWithDefault("HOSTNAME", "ipreveal.cc")
 	protocol := getEnvWithDefault("CMD_PROTOCOL", "")
 
 	cmd_hostname := protocol + hostname
