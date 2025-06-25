@@ -1,5 +1,5 @@
 
-# ipreveal.cc
+# yourip.sh
 
 ## Fork of ifconfig.io
 This is a fork of ifconfig.io. Please read the original repo for more configuration instructions.
@@ -17,7 +17,7 @@ This repo: https://github.com/xavier-hernandez/ipreveal.cc
 
 Docker Image: https://hub.docker.com/r/xavierh/ipreveal
 
-Website: https://ipreveal.cc
+Website: https://yourip.sh
 
 ## Docker-Compose
 
@@ -28,6 +28,7 @@ version: "3.4"
 
 services:
   ipreveal:
+
     container_name: ipreveal
     image: xavierh/ipreveal:latest
     ports:
@@ -43,3 +44,9 @@ services:
 # **Disclaimer**
 This product includes GeoLite2 data created by MaxMind, available from
 <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
+
+
+
+
+
+
