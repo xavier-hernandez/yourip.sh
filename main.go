@@ -7,6 +7,7 @@ import (
 	json "github.com/json-iterator/go"
 	"github.com/oschwald/maxminddb-golang"
 	"github.com/pires/go-proxyproto"
+	"html/template"
 	"io"
 	"log"
 	"net"
@@ -33,6 +34,7 @@ type Configuration struct {
 	maxMindPassword       string // MaxMind Password
 	plausible             string // Plausible domain
 	self_hosted_plausible string // Plausible self hosted domain for JS
+	icon_html             string // HTML for icon corner
 }
 
 var configuration = Configuration{}
@@ -45,7 +47,7 @@ func init() {
 		})
 	}
 
-	hostname := getEnvWithDefault("HOSTNAME", "ipreveal.cc")
+	hostname := getEnvWithDefault("HOSTNAME", "")
 	protocol := getEnvWithDefault("CMD_PROTOCOL", "")
 
 	cmd_hostname := protocol + hostname
@@ -69,6 +71,7 @@ func init() {
 
 	plausible := getEnvWithDefault("PLAUSIBLE", "")
 	self_hosted_plausible := getEnvWithDefault("PLAUSIBLE_SELF_HOSTED_DOMAIN", "")
+	icon_html := getEnvWithDefault("ICON_HTML", "")
 
 	configuration = Configuration{
 		hostname:              hostname,
@@ -86,6 +89,7 @@ func init() {
 		maxMindPassword:       maxMindPassword,
 		plausible:             plausible,
 		self_hosted_plausible: self_hosted_plausible,
+		icon_html:             icon_html,
 	}
 }
 
@@ -139,9 +143,15 @@ func mainHandler(c *gin.Context) {
 	//}
 
 	c.Set("ifconfig_hostname", configuration.hostname)
+	if configuration.hostname == "" {
+		urlHostname := GetHostname(c.Request)
+		c.Set("ifconfig_hostname", urlHostname)
+	}
+
 	c.Set("ifconfig_cmd_hostname", configuration.cmd_hostname)
 	c.Set("ifconfig_plausible", configuration.plausible)
 	c.Set("ifconfig_self_hosted_plausible", configuration.self_hosted_plausible)
+	c.Set("ifconfig_icon_html", template.HTML(configuration.icon_html))
 
 	t := time.Now()
 	c.Set("ifconfig_copyrightYear", t.Year())
@@ -251,7 +261,6 @@ func mainHandler(c *gin.Context) {
 	} else {
 		c.String(200, fmt.Sprintln(fieldResult))
 	}
-
 }
 
 func getEnvWithDefault(key string, defaultValue string) string {
@@ -500,4 +509,12 @@ func GetMaxMindInfoFromDBs(ipAddress string) MaxmindNode {
 	maxmindResult.MaxMindError = false
 
 	return maxmindResult
+}
+
+func GetHostname(r *http.Request) string {
+	host, _, err := net.SplitHostPort(r.Host)
+	if err != nil {
+		return r.Host
+	}
+	return host
 }
