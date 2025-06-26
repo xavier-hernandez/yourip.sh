@@ -144,8 +144,8 @@ func mainHandler(c *gin.Context) {
 
 	c.Set("ifconfig_hostname", configuration.hostname)
 	if configuration.hostname == "" {
-		domain := c.Request.Host
-		c.Set("ifconfig_hostname", domain)
+		host := c.GetHeader("X-Forwarded-Host")
+		c.Set("ifconfig_hostname", host)
 	}
 
 	c.Set("ifconfig_cmd_hostname", configuration.cmd_hostname)
