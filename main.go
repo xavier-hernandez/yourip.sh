@@ -144,8 +144,8 @@ func mainHandler(c *gin.Context) {
 
 	c.Set("ifconfig_hostname", configuration.hostname)
 	if configuration.hostname == "" {
-		urlHostname := GetHostname(c.Request)
-		c.Set("ifconfig_hostname", urlHostname)
+		domain := c.Request.Host
+		c.Set("ifconfig_hostname", domain)
 	}
 
 	c.Set("ifconfig_cmd_hostname", configuration.cmd_hostname)
@@ -509,12 +509,4 @@ func GetMaxMindInfoFromDBs(ipAddress string) MaxmindNode {
 	maxmindResult.MaxMindError = false
 
 	return maxmindResult
-}
-
-func GetHostname(r *http.Request) string {
-	host, _, err := net.SplitHostPort(r.Host)
-	if err != nil {
-		return r.Host
-	}
-	return host
 }

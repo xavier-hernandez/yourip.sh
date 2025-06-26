@@ -34,12 +34,13 @@ services:
     ports:
       - 8080:8080
     environment:
-      HOSTNAME: "ipreveal.io"
+      HOSTNAME: "ipreveal.cc"
       MAXMIND_USERNAME: [USERNAME] #internal GeoLite2 databases are used if your not passing a username or password 
       MAXMIND_PASSWORD: [PASSWORD] #internal GeoLite2 databases are used if your not passing a username or password
       PLAUSIBLE: [PLAUSIBLE_DOMAIN] #entering a domain here will enable the snippet
       PLAUSIBLE_SELF_HOSTED_DOMAIN: [PLAUSIBLE_SELF_HOSTED_DOMAIN] #meant to set the JS script to your self hosted domain
       FORWARD_IP_HEADER: X-Forwarded-For #if using npm as proxy
+      ICON_HTML: #OPTIONAL - Place any HTML here that you'd like to show in the top right of the page
 ```
 # **Disclaimer**
 This product includes GeoLite2 data created by MaxMind, available from
