@@ -27,14 +27,14 @@ Here is a sample docker-compose file:
 version: "3.4"
 
 services:
-  ipreveal:
+  remoteip:
 
-    container_name: ipreveal
+    container_name: remoteip
     image: xavierh/ipreveal:latest
     ports:
       - 8080:8080
     environment:
-      HOSTNAME: "ipreveal.cc"
+      HOSTNAME: "remoteip.dev"
       MAXMIND_USERNAME: [USERNAME] #internal GeoLite2 databases are used if your not passing a username or password 
       MAXMIND_PASSWORD: [PASSWORD] #internal GeoLite2 databases are used if your not passing a username or password
       PLAUSIBLE: [PLAUSIBLE_DOMAIN] #entering a domain here will enable the snippet
