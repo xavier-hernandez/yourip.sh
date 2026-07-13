@@ -13,11 +13,11 @@ Original website: https://ifconfig.io/
   - Geo Location API or Local databases
 - Plausible Analytics
 
-This repo: https://github.com/xavier-hernandez/ipreveal.cc
+This repo: https://github.com/xavier-hernandez/remoteip.dev
 
 Docker Image: https://hub.docker.com/r/xavierh/ipreveal
 
-Website: https://yourip.sh
+Website: https://remoteip.dev
 
 ## Docker-Compose
 
